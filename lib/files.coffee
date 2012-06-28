@@ -20,7 +20,7 @@ exports.fetchFromUrl = (url, path, callback) ->
   catch error
     callback {code: "invalidURL", message: "'#{url}' is invalid file URL"}  # error callback
 
-# Method for getting file name from the path
+# Method for getting file name from the path.
 exports.getFileName = (path) ->
   if !path
     return null
@@ -29,3 +29,13 @@ exports.getFileName = (path) ->
     return null
   fileNameTokens = filePathTokens[filePathTokens.length - 1].split(".")
   return fileNameTokens[0]   
+
+# Method for getting file extension from the path.
+exports.getFileExt = (path) ->
+  if !path
+    return null
+  filePathTokens = path.split("/")
+  if filePathTokens.length == 0
+    return null
+  fileNameTokens = filePathTokens[filePathTokens.length - 1].split(".")
+  return fileNameTokens[1]   

@@ -56,3 +56,14 @@ describe "files", ->
       should.not.exist files.getFileName(null)
     it "should return null for undefined path", ->
       should.not.exist files.getFileName(undefined)
+  describe "#getFileExt", ->
+    it "should return valid filename for valid path", ->
+      files.getFileExt("../path/my-file.pdf").should.eql "pdf"
+    it "should return valid filename for simple path", ->
+      files.getFileExt("./my-file.pdf").should.eql "pdf"
+    it "should return null for path with filename without extension", ->
+      should.not.exist files.getFileExt("./my-file")
+    it "should return null for null path", ->
+      should.not.exist files.getFileExt(null)
+    it "should return null for undefined path", ->
+      should.not.exist files.getFileExt(undefined)     

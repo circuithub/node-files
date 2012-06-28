@@ -11,7 +11,7 @@ launch = (cmd, args = [], options = {}, callback) ->
 runTests = (path, watch) ->
   env = process.env
   env.NODE_ENV = "test"
-  args = ["--growl", "--compilers", "coffee:coffee-script", "-R", "list", "-t", "4000"]
+  args = ["--growl", "--compilers", "coffee:coffee-script", "-R", "list", "-t", "6000"]
   if watch
     args.push "--watch"
   if Array.isArray path

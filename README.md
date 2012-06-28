@@ -1,7 +1,7 @@
 node-files
 ==========
 
-Simple files utilities for Node.js
+Simple files' utilities for Node.js
 
 # Overview
 
@@ -19,6 +19,14 @@ Code
 ``` coffee
 
 files = require "files"
+
+files.getFileName("./my-file.pdf")
+## "my-file"
+
+files.getFileName("./my-file.pdf")
+## "pdf"
+
+files.fetchFromUrl "https://github.com/circuithub/node-files/zipball/master", "./download", (err, path) -> ...
 
 
 ```
