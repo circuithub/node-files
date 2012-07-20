@@ -38,4 +38,6 @@ exports.getFileExt = (path) ->
   if filePathTokens.length == 0
     return null
   fileNameTokens = filePathTokens[filePathTokens.length - 1].split(".")
-  return fileNameTokens[1]   
+  if fileNameTokens.length < 2
+    return ""
+  return fileNameTokens[fileNameTokens.length - 1]   
