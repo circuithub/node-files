@@ -1,7 +1,7 @@
 fs       = require "fs"
 path     = require "path"
+util     = require "util"
 
-fsExtra  = require "fs.extra"
 {check}  = require "validator"
 request  = require "request"
 
@@ -15,12 +15,12 @@ exports.fetchFromUrl = (url, path, callback) ->
     check(url).isUrl() # check url for validity
     req = request url, (err, response, body) ->
       if err or response.statusCode != 200
-        callback {code: "fileNotFound", message: "File wasn't found on URL '#{url}'"}  # error callback
+        callback {code: "fileNotFound", message: "File wasn't found on URL '#{url}'"}
     req.on "end", () ->
       callback undefined, path # success callback
     req.pipe fs.createWriteStream(path)
   catch error
-    callback {code: "invalidURL", message: "'#{url}' is invalid file URL"}  # error callback
+    callback {code: "invalidURL", message: "'#{url}' is invalid file URL"} 
 
 # Get file name from the path.
 exports.getFileName = (path) ->
@@ -45,8 +45,21 @@ exports.getFileExt = (path) ->
   return fileNameTokens[fileNameTokens.length - 1]   
 
 
+# Copy file.
+# Adapted from https://github.com/coolaj86/node-examples-js/tree/master/fs.extra.
+exports.copyFile = (src, dst, callback) ->
+  fs.stat dst, (err) ->
+    fs.stat src, (err) ->
+      if err # check whether source file exists
+        callback {code: "fileNotExists", message: "'#{src}' file path is invalid"} 
+        return
+      readStream = fs.createReadStream src
+      writeStream = fs.createWriteStream dst
+      util.pump readStream, writeStream, callback
+
 # Copy array of files to destination folder.
 exports.copyToDir = (files, dst, callback) ->
-  for file in files then do () ->
-    filename = path.basename file
-    fsExtra.copy file, "#{dst}/#{filename}", callback
+  for file in files 
+    do (file) ->
+      filename = path.basename file
+      exports.copyFile file, "#{dst}/#{filename}", callback
