@@ -2,6 +2,7 @@ fs       = require "fs"
 path     = require "path"
 util     = require "util"
 
+async    = require "async"
 {check}  = require "validator"
 request  = require "request"
 
@@ -59,7 +60,13 @@ exports.copyFile = (src, dst, callback) ->
 
 # Copy array of files to destination folder.
 exports.copyToDir = (files, dst, callback) ->
+  workers = []
   for file in files 
-    do (file) ->
-      filename = path.basename file
-      exports.copyFile file, "#{dst}/#{filename}", callback
+    filename = path.basename file
+    worker = async.apply exports.copyFile, file, "#{dst}/#{filename}"
+    workers.push worker
+  async.parallel workers, (err, results) ->
+    if err
+      callback err
+    else
+      callback()        
