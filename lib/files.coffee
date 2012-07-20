@@ -49,4 +49,4 @@ exports.getFileExt = (path) ->
 exports.copyToDir = (files, dst, callback) ->
   for file in files then do () ->
     filename = path.basename file
-    fsExta.copy file, "#{dst}/#{filename}", callback
+    fsExtra.copy file, "#{dst}/#{filename}", callback
