@@ -1,10 +1,12 @@
 fs       = require "fs"
+path     = require "path"
 
+fsExtra  = require "fs.extra"
 {check}  = require "validator"
 request  = require "request"
 
 
-# Method for fetching file from URL into specified path.
+# Fetch file from URL into specified path.
 exports.fetchFromUrl = (url, path, callback) ->
   if !url or !path or !callback
     callback {code: "invalidArguments", message: "Mandatory arguments weren't specified"}
@@ -20,7 +22,7 @@ exports.fetchFromUrl = (url, path, callback) ->
   catch error
     callback {code: "invalidURL", message: "'#{url}' is invalid file URL"}  # error callback
 
-# Method for getting file name from the path.
+# Get file name from the path.
 exports.getFileName = (path) ->
   if !path
     return null
@@ -30,7 +32,7 @@ exports.getFileName = (path) ->
   fileNameTokens = filePathTokens[filePathTokens.length - 1].split(".")
   return fileNameTokens[0]   
 
-# Method for getting file extension from the path.
+# Get file extension from the path.
 exports.getFileExt = (path) ->
   if !path
     return null
@@ -41,3 +43,10 @@ exports.getFileExt = (path) ->
   if fileNameTokens.length < 2
     return ""
   return fileNameTokens[fileNameTokens.length - 1]   
+
+
+# Copy array of files to destination folder.
+exports.copyToDir = (files, dst, callback) ->
+  for file in files then do () ->
+    filename = path.basename file
+    fsExta.copy file, "#{dst}/#{filename}", callback
