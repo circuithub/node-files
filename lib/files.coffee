@@ -1,6 +1,8 @@
 fs       = require "fs"
 path     = require "path"
 util     = require "util"
+uuid     = require "node-uuid"
+crypto   = require "crypto"
 
 async    = require "async"
 {check}  = require "validator"
@@ -22,6 +24,30 @@ exports.fetchFromUrl = (url, path, callback) ->
     req.pipe fs.createWriteStream(path)
   catch error
     callback {code: "invalidURL", message: "'#{url}' is invalid file URL"} 
+
+# Method for fetching file from URL into specified path, using the content of the fetched file 
+# as the filename. Passes the complete path and filename back.
+fetchFromUrlToHash = exports.fetchFromUrlToHash = (url, path, extension, callback) ->
+  if !url or !path or !callback
+    callback {code: "invalidArguments", message: "Mandatory arguments weren't specified"}
+    return
+  try
+    check(url).isUrl() # check url for validity
+    req = request url, (err, response, body) ->
+      if err or response.statusCode != 200
+        callback {code: "fileNotFound", message: "File wasn't found on URL '#{url}'"}  # error callback
+    tempId = uuid.v1()
+    fileStream = fs.createWriteStream(path + tempId)
+    req.pipe fileStream
+    md5sum = crypto.createHash("md5")
+    req.on "data", (d) ->
+      md5sum.update(d)
+    req.on "end", (d) ->
+      newPath = path + md5sum.digest("hex") + extension
+      fs.rename path + tempId, newPath, =>
+        callback undefined, newPath # success callback
+  catch error
+    callback {code: "invalidURL", message: "'#{url}' is invalid file URL"}  # error callback
 
 # Get file name from the path.
 exports.getFileName = (path) ->
