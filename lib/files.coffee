@@ -27,8 +27,8 @@ exports.fetchFromUrl = (url, path, callback) ->
 
 # Method for fetching file from URL into specified path, using the content of the fetched file 
 # as the filename. Passes the complete path and filename back.
-fetchFromUrlToHash = exports.fetchFromUrlToHash = (url, path, extension, callback) ->
-  if !url or !path or !callback
+exports.fetchFromUrlToHash = (url, path, extension, callback) ->
+  if !url or !path or !callback or !extension
     callback {code: "invalidArguments", message: "Mandatory arguments weren't specified"}
     return
   try
@@ -44,7 +44,7 @@ fetchFromUrlToHash = exports.fetchFromUrlToHash = (url, path, extension, callbac
       md5sum.update(d)
     req.on "end", (d) ->
       newPath = path + md5sum.digest("hex") + extension
-      fs.rename path + tempId, newPath, =>
+      fs.rename path + tempId, newPath, ->
         callback undefined, newPath # success callback
   catch error
     callback {code: "invalidURL", message: "'#{url}' is invalid file URL"}  # error callback

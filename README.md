@@ -29,6 +29,8 @@ files.getFileName("./my-file.pdf")
 files.fetchFromUrl "https://github.com/circuithub/node-files/zipball/master", "./download", (err, path) -> ...
 
 
+files.fetchFromUrlToHash "https://github.com/circuithub/node-files/zipball/master", "./download",  ".zip", (err, path) -> ...
+
 ```
 
 That's easy!
