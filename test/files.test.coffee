@@ -49,7 +49,7 @@ describe "files", ->
     it "should fetch for valid input", (done) ->
       files.fetchFromUrlToHash "https://github.com/circuithub/node-files/zipball/master", "./", ".zip", (err, path) ->
         should.not.exist err
-        path.should.eql "./4709bfb64c375f2e0a661d53344dba47.zip"
+        path.should.eql "./40403865ee29abb13f2d02648a653405.zip"
         done()
      it "should fail for invalid url", (done) ->
       files.fetchFromUrlToHash "not-an-url", "./test.zip", ".zip", (err, path) ->
