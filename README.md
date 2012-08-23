@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/circuithub/node-files.png)](http://travis-ci.org/circuithub/node-files)
 node-files
 ==========
 
