@@ -19,6 +19,8 @@ exports.fetchFromUrl = (url, path, callback) ->
     req = request url, (err, response, body) ->
       if err or response.statusCode != 200
         callback {code: "fileNotFound", message: "File wasn't found on URL '#{url}'"}
+    req.on "error", (e) ->
+      callback {code: "errorFetchingFile", message: "File wasn't fetch using URL '#{url}'", error: e}       
     req.on "end", () ->
       callback undefined, path # success callback
     req.pipe fs.createWriteStream(path)
@@ -38,14 +40,16 @@ exports.fetchFromUrlToHash = (url, path, extension, callback) ->
         callback {code: "fileNotFound", message: "File wasn't found on URL '#{url}'"}  # error callback
     tempId = uuid.v1()
     fileStream = fs.createWriteStream(path + tempId)
-    req.pipe fileStream
     md5sum = crypto.createHash("md5")
+    req.on "error", (e) ->
+      callback {code: "errorFetchingFile", message: "File wasn't fetch using URL '#{url}'", error: e}
     req.on "data", (d) ->
       md5sum.update(d)
     req.on "end", (d) ->
       newPath = path + md5sum.digest("hex") + extension
       fs.rename path + tempId, newPath, ->
         callback undefined, newPath # success callback
+      req.pipe fileStream
   catch error
     callback {code: "invalidURL", message: "'#{url}' is invalid file URL"}  # error callback
 
