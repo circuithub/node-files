@@ -49,11 +49,11 @@ describe "files", ->
     it "should fetch for valid input", (done) ->
       files.fetchFromUrlToHash "https://github.com/circuithub/node-files/zipball/master", "./", ".zip", (err, path) ->
         should.not.exist err
-        path.should.eql "./40403865ee29abb13f2d02648a653405.zip"
+        path.should.eql "./ed2e3478986946e5d88d6ba8ff7fc280.zip"
         done()
      it "should fail for invalid url", (done) ->
       files.fetchFromUrlToHash "not-an-url", "./test.zip", ".zip", (err, path) ->
-        err.code.should.eql "invalidURL"
+        err.code.should.eql "fileNotFound"
         err.message.should.eql "\'not-an-url\' is invalid file URL"
         should.not.exist path
         done() 
@@ -89,7 +89,7 @@ describe "files", ->
         done()         
      it "should fail for valid url that doesn't exist", (done) ->
       files.fetchFromUrlToHash "https://circuithub-invalid-url.com/file", "./test.zip", ".zip", (err, path) ->
-        err.code.should.eql "fileNotFound"
+        err.code.should.eql "invalidURL"
         err.message.should.eql "File wasn't found on URL 'https://circuithub-invalid-url.com/file'"
         should.not.exist path
         done()                 
