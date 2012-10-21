@@ -19,3 +19,5 @@ node-files.sublime-workspace
 test.zip
 *.zip
 test.zip*
+
+.DS_Store

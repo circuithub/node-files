@@ -49,6 +49,25 @@ exports.fetchFromUrlToHash = (url, path, extension, callback) ->
   catch error
     callback {code: "invalidURL", message: "'#{url}' is invalid file URL"}  # error callback
 
+
+# Method for finding content hash for file behind url.
+exports.findUrlContentHash = (url, callback) ->
+  if !url
+    callback {code: "invalidArguments", message: "Mandatory arguments weren't specified"}
+    return
+  try
+    check(url).isUrl() # check url for validity
+    md5sum = crypto.createHash("md5")    
+    req = request url, (err, response, body) ->
+      if err or response.statusCode != 200
+        callback {code: "fileNotFound", message: "File wasn't found on URL '#{url}'"}  # error callback
+        return       
+      callback undefined, md5sum.digest("hex")  # success callback
+    req.on "data", (d) ->
+      md5sum.update d      
+  catch error
+    callback {code: "invalidURL", message: "'#{url}' is invalid file URL"}  # error callback
+
 # Get file name from the path.
 exports.getFileName = (path) ->
   if !path

@@ -44,16 +44,34 @@ describe "files", ->
         err.code.should.eql "fileNotFound"
         err.message.should.eql "File wasn't found on URL 'https://circuithub-invalid-url.com/file'"
         should.not.exist path
-        done()          
- describe "#fetchFromUrlToHash", ->
-    it "should fetch for valid input", (done) ->
-      files.fetchFromUrlToHash "https://github.com/circuithub/node-files/zipball/master", "./", ".zip", (err, path) ->
+        done()       
+  describe "#findUrlContentHash", ->
+   it "should return valid content hash for valid input", (done) -> 
+      files.findUrlContentHash "http://cloud.github.com/downloads/circuithub/node-files/index.coffee", (err, hash) ->
         should.not.exist err
-        path.should.eql "./1bfb996ba0e8a99521889318ec025eb5.zip"
+        hash.should.eql "37f53f3f9825245ab746f24655adf75c"
+        done()     
+     it "should fail for null url", (done) ->
+      files.findUrlContentHash null, (err, hash) ->
+        err.code.should.eql "invalidArguments"
+        err.message.should.eql "Mandatory arguments weren't specified"
+        should.not.exist hash
+        done()  
+     it "should fail for undefined url", (done) ->
+      files.findUrlContentHash undefined, (err, hash) ->
+        err.code.should.eql "invalidArguments"
+        err.message.should.eql "Mandatory arguments weren't specified"
+        should.not.exist hash
+        done()                 
+  describe "#fetchFromUrlToHash", ->
+    it "should fetch for valid input", (done) ->
+      files.fetchFromUrlToHash "http://cloud.github.com/downloads/circuithub/node-files/index.coffee", "./", ".zip", (err, path) ->
+        should.not.exist err
+        path.should.eql "./37f53f3f9825245ab746f24655adf75c.zip"
         done()
      it "should fail for invalid url", (done) ->
       files.fetchFromUrlToHash "not-an-url", "./test.zip", ".zip", (err, path) ->
-        err.code.should.eql "fileNotFound"
+        err.code.should.eql "invalidURL"
         err.message.should.eql "\'not-an-url\' is invalid file URL"
         should.not.exist path
         done() 
@@ -89,7 +107,7 @@ describe "files", ->
         done()         
      it "should fail for valid url that doesn't exist", (done) ->
       files.fetchFromUrlToHash "https://circuithub-invalid-url.com/file", "./test.zip", ".zip", (err, path) ->
-        err.code.should.eql "invalidURL"
+        err.code.should.eql "fileNotFound"
         err.message.should.eql "File wasn't found on URL 'https://circuithub-invalid-url.com/file'"
         should.not.exist path
         done()                 
