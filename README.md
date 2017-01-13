@@ -23,7 +23,7 @@ files = require "files"
 files.getFileName("./my-file.pdf")
 ## "my-file"
 
-files.getFileName("./my-file.pdf")
+files.getFileExt("./my-file.pdf")
 ## "pdf"
 
 files.fetchFromUrl "https://github.com/circuithub/node-files/zipball/master", "./download", (err, path) -> ...
